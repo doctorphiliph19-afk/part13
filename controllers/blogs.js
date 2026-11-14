@@ -1,3 +1,4 @@
+
 const Blog = require('../models/blog')
 
 // Get all blogs
@@ -37,8 +38,27 @@ const remove = async (req, res, next) => {
   }
 }
 
+// Update blog likes
+const update = async (req, res, next) => {
+  try {
+    const blog = await Blog.findByPk(req.params.id)
+
+    if (!blog) {
+      return res.status(404).end()
+    }
+
+    blog.likes = req.body.likes
+    await blog.save()
+
+    res.json(blog)
+  } catch (error) {
+    next(error)
+  }
+}
+
 module.exports = {
   getAll,
   create,
   remove,
+  update,
 }

@@ -21,6 +21,9 @@ const Blog = sequelize.define('Blog', {
   likes: {
     type: DataTypes.INTEGER,
     defaultValue: 0,
+    validate: {
+      isInt: true,
+    },
   },
 }, {
   tableName: 'blogs',

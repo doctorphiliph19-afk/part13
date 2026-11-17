@@ -7,6 +7,14 @@ CREATE TABLE blogs (
     likes INTEGER DEFAULT 0
 );
 
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    username VARCHAR(255) NOT NULL,
+    createdat TIMESTAMP WITH TIME ZONE NOT NULL,
+    updatedat TIMESTAMP WITH TIME ZONE NOT NULL
+);
+
 INSERT INTO blogs (author, url, title, likes)
 VALUES
 ('Dr. Philiph', 'https://example.com/blog1', 'Learning Full Stack Development', 5),

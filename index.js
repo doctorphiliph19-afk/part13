@@ -1,14 +1,27 @@
+
+require('dotenv').config()
+
 const express = require('express')
 const app = express()
 
+// Load Sequelize model associations
+require('./models/associations')
+
+// Middleware
 app.use(express.json())
 
+const tokenExtractor = require('./middleware/tokenExtractor')
+app.use(tokenExtractor)
+
+// Routes
 const blogsRouter = require('./routes/blogs')
 const usersRouter = require('./routes/users')
+const loginRouter = require('./routes/login')
 const errorHandler = require('./middleware/errorHandler')
 
 app.use('/api/blogs', blogsRouter)
 app.use('/api/users', usersRouter)
+app.use('/api/login', loginRouter)
 
 app.use(errorHandler)
 

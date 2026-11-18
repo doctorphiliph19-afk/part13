@@ -1,8 +1,14 @@
+const bcrypt = require('bcrypt')
 const User = require('../models/user')
+const Blog = require('../models/blog')
 
 const getAll = async (req, res, next) => {
   try {
-    const users = await User.findAll()
+    const users = await User.findAll({
+      include: {
+        model: Blog,
+      },
+    })
     res.json(users)
   } catch (error) {
     next(error)
@@ -11,8 +17,22 @@ const getAll = async (req, res, next) => {
 
 const create = async (req, res, next) => {
   try {
-    const { name, username } = req.body || {}
-    const user = await User.create({ name, username })
+    const { name, username, password } = req.body || {}
+
+    if (!username || !name || !password) {
+      return res.status(400).json({
+        error: 'Username, name and password are required',
+      })
+    }
+
+    if (typeof password !== 'string' || password.length < 3) {
+      return res.status(400).json({
+        error: 'Password must contain at least 3 characters',
+      })
+    }
+
+    const passwordHash = await bcrypt.hash(password, 10)
+    const user = await User.create({ name, username, passwordHash })
     res.status(201).json(user)
   } catch (error) {
     next(error)

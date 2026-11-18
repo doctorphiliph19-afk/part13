@@ -1,18 +1,20 @@
 ﻿
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    passwordhash TEXT NOT NULL,
+    createdat TIMESTAMP WITH TIME ZONE NOT NULL,
+    updatedat TIMESTAMP WITH TIME ZONE NOT NULL
+);
+
 CREATE TABLE blogs (
     id SERIAL PRIMARY KEY,
     author TEXT,
     url TEXT NOT NULL,
     title TEXT NOT NULL,
-    likes INTEGER DEFAULT 0
-);
-
-CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    username VARCHAR(255) NOT NULL UNIQUE,
-    createdat TIMESTAMP WITH TIME ZONE NOT NULL,
-    updatedat TIMESTAMP WITH TIME ZONE NOT NULL
+    likes INTEGER DEFAULT 0,
+    "userId" INTEGER REFERENCES users(id)
 );
 
 INSERT INTO blogs (author, url, title, likes)

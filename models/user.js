@@ -26,6 +26,11 @@ const User = sequelize.define('User', {
       },
     },
   },
+  passwordHash: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    field: 'passwordhash',
+  },
   createdAt: {
     type: DataTypes.DATE,
     field: 'createdat',
@@ -38,5 +43,11 @@ const User = sequelize.define('User', {
   tableName: 'users',
   timestamps: true,
 })
+
+User.prototype.toJSON = function () {
+  const values = { ...this.get() }
+  delete values.passwordHash
+  return values
+}
 
 module.exports = User

@@ -2,6 +2,7 @@ const { Op } = require('sequelize')
 const User = require('../models/user')
 const Blog = require('../models/blog')
 // Get all blogs
+
 const getAll = async (req, res, next) => {
   try {
     const search = req.query.search
@@ -9,9 +10,18 @@ const getAll = async (req, res, next) => {
     const blogs = await Blog.findAll({
       where: search
         ? {
-            title: {
-              [Op.iLike]: `%${search}%`,
-            },
+            [Op.or]: [
+              {
+                title: {
+                  [Op.iLike]: `%${search}%`,
+                },
+              },
+              {
+                author: {
+                  [Op.iLike]: `%${search}%`,
+                },
+              },
+            ],
           }
         : {},
       include: {
@@ -25,6 +35,7 @@ const getAll = async (req, res, next) => {
     next(error)
   }
 }
+
 const create = async (req, res, next) => {
   try {
     if (!req.decodedToken) {

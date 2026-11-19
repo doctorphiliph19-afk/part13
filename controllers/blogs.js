@@ -1,21 +1,30 @@
+const { Op } = require('sequelize')
 const User = require('../models/user')
 const Blog = require('../models/blog')
-
 // Get all blogs
 const getAll = async (req, res, next) => {
   try {
+    const search = req.query.search
+
     const blogs = await Blog.findAll({
+      where: search
+        ? {
+            title: {
+              [Op.iLike]: `%${search}%`,
+            },
+          }
+        : {},
       include: {
         model: User,
         attributes: ['id', 'name', 'username'],
       },
     })
+
     res.json(blogs)
   } catch (error) {
     next(error)
   }
 }
-
 const create = async (req, res, next) => {
   try {
     if (!req.decodedToken) {

@@ -3,6 +3,7 @@ const User = require('../models/user')
 const Blog = require('../models/blog')
 // Get all blogs
 
+
 const getAll = async (req, res, next) => {
   try {
     const search = req.query.search
@@ -24,6 +25,7 @@ const getAll = async (req, res, next) => {
             ],
           }
         : {},
+      order: [['likes', 'DESC']],
       include: {
         model: User,
         attributes: ['id', 'name', 'username'],

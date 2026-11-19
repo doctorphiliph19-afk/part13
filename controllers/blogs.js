@@ -45,14 +45,25 @@ const create = async (req, res, next) => {
 // Delete a blog
 const remove = async (req, res, next) => {
   try {
-    const deleted = await Blog.destroy({
-      where: { id: req.params.id },
-    })
+    if (!req.decodedToken) {
+      return res.status(401).json({
+        error: 'Token missing',
+      })
+    }
 
-    if (!deleted) {
+    const blog = await Blog.findByPk(req.params.id)
+
+    if (!blog) {
       return res.status(404).end()
     }
 
+    if (blog.userId !== req.decodedToken.id) {
+      return res.status(403).json({
+        error: 'Only the user who added the blog can delete it',
+      })
+    }
+
+    await blog.destroy()
     res.status(204).end()
   } catch (error) {
     next(error)

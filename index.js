@@ -17,11 +17,13 @@ app.use(tokenExtractor)
 const blogsRouter = require('./routes/blogs')
 const usersRouter = require('./routes/users')
 const loginRouter = require('./routes/login')
+const authorsRouter = require('./routes/authors')
 const errorHandler = require('./middleware/errorHandler')
 
 app.use('/api/blogs', blogsRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
+app.use('/api/authors', authorsRouter)
 
 app.use(errorHandler)
 

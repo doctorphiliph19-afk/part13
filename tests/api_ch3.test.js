@@ -1,3 +1,4 @@
+
 const { describe, it, before } = require('node:test')
 const assert = require('node:assert')
 const axios = require('axios')
@@ -22,7 +23,8 @@ describe('Blogs API', () => {
     const newBlog = {
       title: 'Test Blog Post',
       author: 'Test Author',
-      url: 'https://example.com/test-blog'
+      url: 'https://example.com/test-blog',
+      year: 2026
     }
 
     const response = await axios.post(`${baseUrl}/blogs`, newBlog, {
@@ -34,6 +36,7 @@ describe('Blogs API', () => {
     assert.strictEqual(response.data.author, newBlog.author)
     assert.strictEqual(response.data.url, newBlog.url)
     assert.strictEqual(response.data.likes, 0)
+    assert.strictEqual(response.data.year, newBlog.year)
   })
 
   it('created blog appears in blogs list', async () => {
@@ -53,6 +56,60 @@ describe('Blogs API', () => {
     assert.ok([200, 201].includes(response.status))
     assert.strictEqual(response.data.likes, 5)
   })
+
+  it('rejects a year earlier than 1991', async () => {
+    const invalidBlog = {
+      title: 'Old Blog',
+      author: 'Test Author',
+      url: 'https://example.com/old-blog',
+      year: 1990
+    }
+
+    try {
+      await axios.post(`${baseUrl}/blogs`, invalidBlog, {
+        headers: { Authorization: `Bearer ${testData.tokens[0]}` }
+      })
+      assert.fail('Expected request to fail')
+    } catch (error) {
+      assert.strictEqual(error.response.status, 400)
+    }
+  })
+
+  it('rejects a year later than the current year', async () => {
+    const invalidBlog = {
+      title: 'Future Blog',
+      author: 'Test Author',
+      url: 'https://example.com/future-blog',
+      year: new Date().getFullYear() + 1
+    }
+
+    try {
+      await axios.post(`${baseUrl}/blogs`, invalidBlog, {
+        headers: { Authorization: `Bearer ${testData.tokens[0]}` }
+      })
+      assert.fail('Expected request to fail')
+    } catch (error) {
+      assert.strictEqual(error.response.status, 400)
+    }
+  })
+
+  it('rejects a year that is not an integer', async () => {
+    const invalidBlog = {
+      title: 'Decimal Year Blog',
+      author: 'Test Author',
+      url: 'https://example.com/decimal-blog',
+      year: 2020.5
+    }
+
+    try {
+      await axios.post(`${baseUrl}/blogs`, invalidBlog, {
+        headers: { Authorization: `Bearer ${testData.tokens[0]}` }
+      })
+      assert.fail('Expected request to fail')
+    } catch (error) {
+      assert.strictEqual(error.response.status, 400)
+    }
+  })
 })
 
 describe('Users API', () => {
@@ -66,7 +123,7 @@ describe('Users API', () => {
   it('users have correct properties', async () => {
     const response = await axios.get(`${baseUrl}/users`)
     const user = response.data[0]
-    
+
     assert.ok(user.id)
     assert.ok(user.username)
     assert.ok(user.name)
@@ -83,7 +140,7 @@ describe('Authors API', () => {
 
   it('author stats have correct structure', async () => {
     const response = await axios.get(`${baseUrl}/authors`)
-    
+
     if (response.data.length > 0) {
       const author = response.data[0]
       assert.ok(author.author)

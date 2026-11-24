@@ -1,9 +1,9 @@
+
 const { Op } = require('sequelize')
 const User = require('../models/user')
 const Blog = require('../models/blog')
+
 // Get all blogs
-
-
 const getAll = async (req, res, next) => {
   try {
     const search = req.query.search
@@ -38,6 +38,7 @@ const getAll = async (req, res, next) => {
   }
 }
 
+// Create a blog
 const create = async (req, res, next) => {
   try {
     if (!req.decodedToken) {
@@ -59,11 +60,13 @@ const create = async (req, res, next) => {
       userId: user.id,
     })
 
+
     res.status(201).json(blog)
   } catch (error) {
     next(error)
   }
 }
+
 // Delete a blog
 const remove = async (req, res, next) => {
   try {

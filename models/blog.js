@@ -26,7 +26,25 @@ const Blog = sequelize.define('Blog', {
       isInt: true,
     },
   },
-}, {
+  year: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    validate: {
+    isInt: {
+      msg: 'Year must be an integer',
+    },
+    min: {
+      args: [1991],
+      msg: 'Year must be at least 1991',
+    },
+    max: {
+      args: [new Date().getFullYear()],
+      msg: `Year cannot be later than ${new Date().getFullYear()}`,
+    },
+  },
+},
+},
+{
   tableName: 'blogs',
   timestamps: true,
   createdAt: 'created_at',

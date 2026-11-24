@@ -1,3 +1,4 @@
+
 name: API Tests
 
 on:
@@ -9,6 +10,11 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+
+    env:
+      TEST_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db?sslmode=disable
+      PORT: 3001
+      SECRET: test_secret
 
     services:
       postgres:
@@ -27,36 +33,31 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          
+
       - name: Install dependencies
         run: npm ci
-      - name: Initialize test database
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y postgresql-client
-          PGPASSWORD=postgres psql -h localhost -U postgres -d test_db -v ON_ERROR_STOP=1 -f commands.sql
+
+      - name: Run database migrations
+        run: npx sequelize-cli db:migrate --env test
+
       - name: Start application
         run: npm run start:test > app.log 2>&1 &
-        env:
-          TEST_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db?sslmode=disable
-          PORT: 3001
-          SECRET: test_secret
-          
+
       - name: Wait for application to be ready
         run: npx wait-on http://localhost:3001 -t 30000
-        
+
       - name: Run tests
         run: npm test
 
       - name: Print application logs on failure
         if: failure()
         run: cat app.log
-        
+
       - name: Stop application
         if: always()
         run: pkill -f "node index.js" || true

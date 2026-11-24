@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "description": "Full Stack Open Part 13 project.",
   "main": "index.js",
- "scripts": {
-  "test": "cross-env TESTING=true node --test --test-concurrency=1 tests/api_ch3.test.js",
-  "start": "node index.js",
-  "dev": "nodemon index.js",
-  "start:test": "cross-env TESTING=true node index.js"
-},
+  "scripts": {
+    "test": "cross-env TESTING=true node --test --test-concurrency=1 tests/api_ch3.test.js",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "start:test": "cross-env TESTING=true node index.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/doctorphiliph19-afk/part13.git"
@@ -32,6 +32,7 @@
   },
   "devDependencies": {
     "cross-env": "^10.1.0",
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.14",
+    "sequelize-cli": "^6.6.5"
   }
 }

@@ -1,2 +1,5 @@
 node_modules/
 .env
+
+bloglist-before-migrations.sql
+test-db-before-migrations.sql

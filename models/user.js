@@ -31,17 +31,11 @@ const User = sequelize.define('User', {
     allowNull: false,
     field: 'passwordhash',
   },
-  createdAt: {
-    type: DataTypes.DATE,
-    field: 'createdat',
-  },
-  updatedAt: {
-    type: DataTypes.DATE,
-    field: 'updatedat',
-  },
 }, {
   tableName: 'users',
   timestamps: true,
+  createdAt: 'created_at',
+  updatedAt: 'updated_at',
 })
 
 User.prototype.toJSON = function () {

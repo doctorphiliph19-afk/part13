@@ -1,3 +1,4 @@
+
 const { DataTypes } = require('sequelize')
 const sequelize = require('./index')
 
@@ -27,7 +28,9 @@ const Blog = sequelize.define('Blog', {
   },
 }, {
   tableName: 'blogs',
-  timestamps: false,
+  timestamps: true,
+  createdAt: 'created_at',
+  updatedAt: 'updated_at',
 })
 
 module.exports = Blog

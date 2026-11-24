@@ -1,9 +1,11 @@
 const { Sequelize } = require('sequelize')
 
-const sequelize = new Sequelize('bloglist', 'postgres', 'postgres', {
-  host: 'localhost',
+const databaseUrl = process.env.TESTING === 'true'
+  ? process.env.TEST_DATABASE_URL
+  : process.env.DATABASE_URL
+
+const sequelize = new Sequelize(databaseUrl, {
   dialect: 'postgres',
-  port: 5432,
   logging: false,
 })
 

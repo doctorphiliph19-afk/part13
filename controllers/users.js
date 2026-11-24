@@ -7,6 +7,7 @@ const getAll = async (req, res, next) => {
     const users = await User.findAll({
       include: {
         model: Blog,
+        as: 'blogs',
       },
     })
     res.json(users)
@@ -14,7 +15,6 @@ const getAll = async (req, res, next) => {
     next(error)
   }
 }
-
 const create = async (req, res, next) => {
   try {
     const { name, username, password } = req.body || {}

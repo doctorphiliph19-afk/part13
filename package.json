@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "description": "Full Stack Open Part 13 project.",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js",
-    "dev": "nodemon index.js"
-  },
+ "scripts": {
+  "test": "cross-env TESTING=true node --test --test-concurrency=1 tests/api_ch3.test.js",
+  "start": "node index.js",
+  "dev": "nodemon index.js",
+  "start:test": "cross-env TESTING=true node index.js"
+},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/doctorphiliph19-afk/part13.git"
@@ -21,6 +22,7 @@
   },
   "homepage": "https://github.com/doctorphiliph19-afk/part13#readme",
   "dependencies": {
+    "axios": "^1.21.1",
     "bcrypt": "^6.0.0",
     "dotenv": "^18.0.10",
     "express": "^5.3.0",
@@ -29,6 +31,7 @@
     "sequelize": "^6.37.8"
   },
   "devDependencies": {
+    "cross-env": "^10.1.0",
     "nodemon": "^3.1.14"
   }
 }

@@ -35,7 +35,11 @@ jobs:
           
       - name: Install dependencies
         run: npm ci
-        
+      - name: Initialize test database
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+          PGPASSWORD=postgres psql -h localhost -U postgres -d test_db -v ON_ERROR_STOP=1 -f commands.sql
       - name: Start application
         run: npm run start:test > app.log 2>&1 &
         env:

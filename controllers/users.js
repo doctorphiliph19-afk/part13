@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt')
 const User = require('../models/user')
 const Blog = require('../models/blog')
-
+const ReadingList = require('../models/readingList')
 const getAll = async (req, res, next) => {
   try {
     const users = await User.findAll({
@@ -41,18 +41,32 @@ const create = async (req, res, next) => {
 
 const getById = async (req, res, next) => {
   try {
-    const user = await User.findByPk(req.params.id)
+    const user = await User.findByPk(req.params.id, {
+      include: {
+        model: ReadingList,
+        as: 'readingList',
+        include: {
+          model: Blog,
+        },
+      },
+    })
 
     if (!user) {
       return res.status(404).end()
     }
 
-    res.json(user)
+    const userJson = user.toJSON()
+
+    res.json({
+      id: userJson.id,
+      name: userJson.name,
+      username: userJson.username,
+      readings: userJson.readingList.map((entry) => entry.Blog),
+    })
   } catch (error) {
     next(error)
   }
 }
-
 const update = async (req, res, next) => {
   try {
     const user = await User.findOne({

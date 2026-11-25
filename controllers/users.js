@@ -1,7 +1,10 @@
+
 const bcrypt = require('bcrypt')
 const User = require('../models/user')
 const Blog = require('../models/blog')
 const ReadingList = require('../models/readingList')
+
+// Get all users
 const getAll = async (req, res, next) => {
   try {
     const users = await User.findAll({
@@ -10,11 +13,14 @@ const getAll = async (req, res, next) => {
         as: 'blogs',
       },
     })
+
     res.json(users)
   } catch (error) {
     next(error)
   }
 }
+
+// Create a user
 const create = async (req, res, next) => {
   try {
     const { name, username, password } = req.body || {}
@@ -33,12 +39,14 @@ const create = async (req, res, next) => {
 
     const passwordHash = await bcrypt.hash(password, 10)
     const user = await User.create({ name, username, passwordHash })
+
     res.status(201).json(user)
   } catch (error) {
     next(error)
   }
 }
 
+// Get a single user with reading list
 const getById = async (req, res, next) => {
   try {
     const user = await User.findByPk(req.params.id, {
@@ -61,12 +69,20 @@ const getById = async (req, res, next) => {
       id: userJson.id,
       name: userJson.name,
       username: userJson.username,
-      readings: userJson.readingList.map((entry) => entry.Blog),
+      readings: userJson.readingList.map((entry) => ({
+        ...entry.Blog.dataValues,
+        readingList: {
+          read: entry.read,
+          id: entry.id,
+        },
+      })),
     })
   } catch (error) {
     next(error)
   }
 }
+
+// Update a user
 const update = async (req, res, next) => {
   try {
     const user = await User.findOne({
